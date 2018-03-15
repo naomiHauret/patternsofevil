@@ -4,8 +4,10 @@
   "description": "Spiral, Electric Wizard inspired drawing made with Axidraw",
   "main": "index.js",
   "scripts": {
-    "start": "rimraf dist && npx webpack --mode production && npx webpack-dev-server",
-    "deploy": "npm run start && git add . && git commit -m ':rocket: deploy' && git push && git subtree push --prefix dist origin gh-pages"
+    "start": "npm run build && npm run wds",
+    "build": "rimraf dist && npx webpack --mode production",
+    "wds":  "npx webpack-dev-server",
+    "deploy": "npm run build && git add . && git commit -m ':rocket: deploy' && git push && git subtree push --prefix dist origin gh-pages"
   },
   "keywords": [
     "axidraw"
