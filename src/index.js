@@ -10,7 +10,10 @@ const params = {
   steps: 20000,
   maxThick: 8.8,
   minThick: 0.8,
-  wiggleAmp: 1.5
+  wiggleAmp: 1.5,
+  spiralRadius: drawCtx.canvas.width / 4,
+  centerWidth: 0.5,
+  wiggleDistance: 1.25
 };
 
 gui.add(params, "steps").onChange((newValue) => {
@@ -33,6 +36,21 @@ gui.add(params, "wiggleAmp").onChange(newValue => {
   redraw();
 });
 
+gui.add(params, "spiralRadius").onChange(newValue => {
+  params.spiralRadius = newValue;
+  redraw();
+});
+
+gui.add(params, "wiggleDistance").onChange(newValue => {
+  params.wiggleDistance = newValue;
+  redraw();
+});
+
+gui.add(params, "centerWidth").onChange(newValue => {
+  params.centerWidth = newValue;
+  redraw();
+});
+
 let lastImg;
 let img;
 
@@ -43,14 +61,15 @@ const processImg = (img, ctx, params) => {
   let imgSize = [img.width, img.height];
   let canvasSize = [ctx.canvas.width, ctx.canvas.height];
 
-  let sizes = zip(imgSize, canvasSize, Array.of);
+  let sizes = zip(imgSize, canvasSize, Array.of); // array containing our image & canvas size
+
+  // Map dimensions
   let scaleF = sizes.map(e => e[0] / e[1]).reduce((a, b) => Math.min(a, b));
   let scaledDims = imgSize.map(e => e / scaleF);
   let imgPos = zip(scaledDims, canvasSize, (a, b) => -(a - b) / 2);
+  ctx.drawImage(img, 0, 0, ...imgSize, ...imgPos, ...scaledDims); // first we draw our image
 
-  ctx.drawImage(img, 0, 0, ...imgSize, ...imgPos, ...scaledDims);
-
-  drawSpiral(drawCtx, imgCtx, params);
+  drawSpiral(drawCtx, imgCtx, params); // then, we draw our spiral based on this image
 }
 
 const drawSpiral = (drawCtx, imgCtx, params) => {
@@ -58,8 +77,8 @@ const drawSpiral = (drawCtx, imgCtx, params) => {
   let maxThick = params.maxThick;
   let minThick = params.minThick;
   let wig = params.wiggleAmp;
-  let a = 1;
-  let b = 2;
+  let centerWidth = params.centerWidth;  // center of the spiral width
+  let wiggleDistance = params.wiggleDistance; // distance between two "wiggles"
   let centerx = drawCtx.canvas.width / 2;
   let centery = drawCtx.canvas.height / 2;
   
@@ -71,15 +90,16 @@ const drawSpiral = (drawCtx, imgCtx, params) => {
   let [lastx, lasty] = [centerx, centery];
 
   for (let i = 0; i < steps; i++) {
-    let angle = 285 / steps * i;
-    let x = centerx + (a + b * angle) * Math.cos(angle) + Math.random() * wig;
-    let y = centery + (a + b * angle) * Math.sin(angle) + Math.random() * wig;
+    let angle = params.spiralRadius / steps * i;
+    let x = centerx + (centerWidth + wiggleDistance * angle) * Math.cos(angle) + Math.random() * wig;
+    let y = centery + (centerWidth + wiggleDistance * angle) * Math.sin(angle) + Math.random() * wig;
 
     drawCtx.beginPath();
     drawCtx.moveTo(lastx, lasty);
 
+    // copy pixel, black and whitify it, redraw it on our canvas, spiral
     let pxl = imgCtx.getImageData(x / 2, y / 2, 1, 1).data.slice(0, 3);
-    let pxlB = 255 - pxl.reduce((a, b) => a + b) / 3;
+    let pxlB = 255 - pxl.reduce((centerWidth, wiggleDistance) => centerWidth + wiggleDistance) / 3;
 
     drawCtx.lineWidth = minThick + pxlB / (255 / (maxThick - minThick));
     drawCtx.lineTo(x, y);

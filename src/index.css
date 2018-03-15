@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css?family=Anton|Josefin+Sans');
+
 :root {
-    --canvasSize: 750px;
+    --spacing: 30px;
+    --size: calc(100vmin - var(--spacing));
 }
 
 * {
@@ -8,21 +11,53 @@
 
 body {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     height: 100vh;
     overflow: hidden;
     margin: 0 auto;
+    padding:  var(--spacing);
+    font-family: 'Josefin Sans', sans-serif;
+    color: #545b66;
 }
 
+/*
+* Instructions
+*/
+.instruction {
+    margin: auto;
+    padding: var(--spacing);
+
+}
+
+h1 {
+    font-family: 'Anton', sans-serif;
+}
+
+small {
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+/*
+  Canvas
+*/
 canvas {
-    border: dotted #ddd 5px;
-    width: var(--canvasSize);
-    height: var(--canvasSize);
-    margin: 0 auto;
+    border: dotted #c9d2e0 5px;
+    width: var(--size);
+    height: var(--size);
+
 }
 
+/*
+   Canvas that receives the dropped image
+*/
 #image {
     display: none;
+}
+
+/*
+  Dat gui
+*/
+.dg.main.a {
+    float: left !important;
 }
