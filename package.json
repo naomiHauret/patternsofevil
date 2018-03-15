@@ -1,0 +1,23 @@
+{
+  "name": "patternsofevil",
+  "version": "1.0.0",
+  "description": "Spiral, Electric Wizard inspired drawing made with Axidraw",
+  "main": "index.js",
+  "scripts": {
+    "start": "rimraf dist && npx webpack --mode production && npx webpack-dev-server",
+    "deploy": "npm run start && git add . && git commit -m ':rocket: deploy' && git push && git subtree push --prefix dist origin gh-pages"
+  },
+  "keywords": [
+    "axidraw"
+  ],
+  "author": "Naomi Hauret",
+  "license": "MIT",
+  "devDependencies": {
+    "css-loader": "^0.28.10",
+    "html-webpack-plugin": "^3.0.6",
+    "style-loader": "^0.20.3",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12",
+    "webpack-dev-server": "^3.1.1"
+  }
+}
