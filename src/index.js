@@ -10,7 +10,7 @@ const params = {
   steps: 20000,
   maxThick: 8.8,
   minThick: 0.8,
-  wiggleAmp: 1.5,
+  wiggleWaviness: 1.5,
   spiralRadius: drawCtx.canvas.width / 4,
   centerWidth: 0.5,
   wiggleDistance: 1.25
@@ -31,8 +31,8 @@ gui.add(params, "minThick").onChange(newValue => {
   redraw();
 });
 
-gui.add(params, "wiggleAmp").onChange(newValue => {
-  params.wiggleAmp = newValue;
+gui.add(params, "wiggleWaviness").onChange(newValue => {
+  params.wiggleWaviness = newValue;
   redraw();
 });
 
@@ -76,7 +76,7 @@ const drawSpiral = (drawCtx, imgCtx, params) => {
   let steps = params.steps;
   let maxThick = params.maxThick;
   let minThick = params.minThick;
-  let wig = params.wiggleAmp;
+  let wig = params.wiggleWaviness;
   let centerWidth = params.centerWidth;  // center of the spiral width
   let wiggleDistance = params.wiggleDistance; // distance between two "wiggles"
   let centerx = drawCtx.canvas.width / 2;
