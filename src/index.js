@@ -1,19 +1,25 @@
-import "index.css"
+import "index.css";
 import dat from "dat.gui";
+import C2S from "canvas2svg"
 
 const gui = new dat.GUI();
-const body = document.body
-const drawCtx = document.getElementById("drawing").getContext("2d");
+const body = document.body;
+const spiralCanvas = document.getElementById("spiral");
+const spiralCtx = spiralCanvas.getContext("2d");
 const imgCtx = document.getElementById("image").getContext("2d");
+const svgExportCtx = new C2S(spiralCtx.canvas.width, spiralCtx.canvas.height);
+const downloadButton = document.querySelector("#downloadSvgCode");
 
 const params = {
   steps: 20000,
   maxThick: 8.8,
   minThick: 0.8,
   wiggleWaviness: 1.5,
-  spiralRadius: drawCtx.canvas.width / 4,
+  spiralRadius: spiralCtx.canvas.width / 4,
   centerWidth: 0.5,
-  wiggleDistance: 1.25
+  wiggleDistance: 1.25,
+  fillStyle: "#fff",
+  strokeStyle: "#000"
 };
 
 gui.add(params, "steps").onChange((newValue) => {
@@ -51,6 +57,16 @@ gui.add(params, "centerWidth").onChange(newValue => {
   redraw();
 });
 
+gui.addColor(params, "fillStyle").onChange(newValue => {
+  params.fillStyle = newValue;
+  spiralCanvas.style.backgroundColor = params.fillStyle;
+});
+
+gui.addColor(params, "strokeStyle").onChange(newValue => {
+  params.strokeStyle = newValue;
+  redraw();
+});
+
 let lastImg;
 let img;
 
@@ -69,24 +85,28 @@ const processImg = (img, ctx, params) => {
   let imgPos = zip(scaledDims, canvasSize, (a, b) => -(a - b) / 2);
   ctx.drawImage(img, 0, 0, ...imgSize, ...imgPos, ...scaledDims); // first we draw our image
 
-  drawSpiral(drawCtx, imgCtx, params); // then, we draw our spiral based on this image
+  drawSpiral(spiralCtx, imgCtx, params); // then, we draw our spiral based on this image
 }
 
-const drawSpiral = (drawCtx, imgCtx, params) => {
+const drawSpiral = (spiralCtx, imgCtx, params) => {
   let steps = params.steps;
   let maxThick = params.maxThick;
   let minThick = params.minThick;
   let wig = params.wiggleWaviness;
   let centerWidth = params.centerWidth;  // center of the spiral width
   let wiggleDistance = params.wiggleDistance; // distance between two "wiggles"
-  let centerx = drawCtx.canvas.width / 2;
-  let centery = drawCtx.canvas.height / 2;
+  let centerx = spiralCtx.canvas.width / 2;
+  let centery = spiralCtx.canvas.height / 2;
   
   // let's spiraaaaaal
-  drawCtx.clearRect(0, 0, drawCtx.canvas.width, drawCtx.canvas.height);
+  spiralCtx.clearRect(0, 0, spiralCtx.canvas.width, spiralCtx.canvas.height);  
+  spiralCtx.moveTo(centerx, centery);
+  spiralCtx.strokeStyle = params.strokeStyle;
+  
+  svgExportCtx.clearRect(0, 0, spiralCtx.canvas.width, spiralCtx.canvas.height);
+  svgExportCtx.moveTo(centerx, centery);
+  svgExportCtx.strokeStyle = params.strokeStyle;  
 
-  drawCtx.moveTo(centerx, centery);
-  drawCtx.strokeStyle = "#000";
   let [lastx, lasty] = [centerx, centery];
 
   for (let i = 0; i < steps; i++) {
@@ -94,16 +114,24 @@ const drawSpiral = (drawCtx, imgCtx, params) => {
     let x = centerx + (centerWidth + wiggleDistance * angle) * Math.cos(angle) + Math.random() * wig;
     let y = centery + (centerWidth + wiggleDistance * angle) * Math.sin(angle) + Math.random() * wig;
 
-    drawCtx.beginPath();
-    drawCtx.moveTo(lastx, lasty);
+    spiralCtx.beginPath();
+    spiralCtx.moveTo(lastx, lasty);
+
+    svgExportCtx.beginPath();
+    svgExportCtx.moveTo(lastx, lasty);
 
     // copy pixel, black and whitify it, redraw it on our canvas, spiral
     let pxl = imgCtx.getImageData(x / 2, y / 2, 1, 1).data.slice(0, 3);
     let pxlB = 255 - pxl.reduce((centerWidth, wiggleDistance) => centerWidth + wiggleDistance) / 3;
 
-    drawCtx.lineWidth = minThick + pxlB / (255 / (maxThick - minThick));
-    drawCtx.lineTo(x, y);
-    drawCtx.stroke();
+    spiralCtx.lineWidth = minThick + pxlB / (255 / (maxThick - minThick));
+    spiralCtx.lineTo(x, y);
+    spiralCtx.stroke();
+
+    svgExportCtx.lineWidth = minThick + pxlB / (255 / (maxThick - minThick));
+    svgExportCtx.lineTo(x, y);
+    svgExportCtx.stroke();
+
     [lastx, lasty] = [x, y];
   }
 };
@@ -127,6 +155,29 @@ const handleDrop = event => {
   reader.readAsDataURL(file);
 };
 
-window.addEventListener("drop", preventDefault)
-window.addEventListener("dragover", preventDefault)
-body.addEventListener("drop", handleDrop)
+const download = (filename, content) => {
+  let pseudoLink = document.createElement("a");
+  pseudoLink.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(content));
+  pseudoLink.setAttribute("download", filename);
+
+  pseudoLink.style.display = "none";
+  document.body.appendChild(pseudoLink);
+
+  pseudoLink.click();
+
+  document.body.removeChild(pseudoLink);
+}
+
+
+downloadButton.addEventListener(
+  "click", () => {
+    let svg = svgExportCtx.getSerializedSvg().toString();
+    let filename = "export.svg";
+
+    download(filename, svg);
+  },
+  false
+);
+window.addEventListener("drop", preventDefault);
+window.addEventListener("dragover", preventDefault);
+body.addEventListener("drop", handleDrop);

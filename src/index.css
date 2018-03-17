@@ -19,6 +19,7 @@ body {
     padding:  var(--spacing);
     font-family: 'Josefin Sans', sans-serif;
     color: #545b66;
+    background-color: #f9f9f9;
 }
 
 /*
@@ -42,10 +43,23 @@ small {
   Canvas
 */
 canvas {
-    border: dotted #c9d2e0 5px;
     width: var(--size);
     height: var(--size);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    background-color: #ffffff;
+}
 
+/*
+    Code
+*/
+code {
+    overflow-y: auto;
+    max-height: 450px;
+    display: block;
+    width: 100%;
+    padding: 20px;
+    border: solid 1px #c9d2e0;
+    border-radius: 5px;
 }
 
 /*
