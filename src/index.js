@@ -12,15 +12,18 @@ const downloadButton = document.querySelector("#downloadSvgCode");
 
 const params = {
   steps: 20000,
-  maxThick: 8.8,
+  maxThick: 12,
   minThick: 0.8,
-  wiggleWaviness: 1.5,
-  spiralRadius: spiralCtx.canvas.width / 4,
-  centerWidth: 0.5,
-  wiggleDistance: 1.25,
-  backgroundColor: "#fff",
-  strokeStyle: "#000"
+  wiggleWaviness: 0,
+  spiralRadius: 300,
+  centerWidth: 0,
+  wiggleDistance: 1.15,
+  backgroundColor: "#ffffff",
+  drawingColor: "#000",
+  isFilled: true,
 };
+
+spiralCanvas.style.backgroundColor = params.backgroundColor
 
 gui.add(params, "steps").onChange((newValue) => {
   params.steps = newValue
@@ -59,11 +62,18 @@ gui.add(params, "centerWidth").onChange(newValue => {
 
 gui.addColor(params, "backgroundColor").onChange(newValue => {
   params.backgroundColor = newValue;
-  spiralCanvas.style.backgroundColor = params.fillStyle;
+  spiralCanvas.style.backgroundColor = params.backgroundColor;
 });
 
-gui.addColor(params, "strokeStyle").onChange(newValue => {
-  params.strokeStyle = newValue;
+gui.addColor(params, "drawingColor").onChange(newValue => {
+  params.drawingColor = newValue;
+  spiralCtx.fillStyle = params.drawingColor;
+  spiralCtx.strokeStyle = params.drawingColor;
+  redraw();
+});
+
+gui.add(params, "isFilled").onChange(newValue => {
+   params.isFilled = newValue;
   redraw();
 });
 
@@ -100,27 +110,25 @@ const drawSpiral = (spiralCtx, imgCtx, params) => {
   
   // let's spiraaaaaal
   spiralCtx.clearRect(0, 0, spiralCtx.canvas.width, spiralCtx.canvas.height);  
-  spiralCtx.strokeWidth = 5; 
   svgExportCtx.clearRect(0, 0, spiralCtx.canvas.width, spiralCtx.canvas.height);
-
-  let [lastx, lasty] = [centerx, centery];
 
   for (let i = 0; i < steps; i++) {
     let angle = params.spiralRadius / steps * i;
     let x = centerx + (centerWidth + wiggleDistance * angle) * Math.cos(angle) + Math.random() * wig;
     let y = centery + (centerWidth + wiggleDistance * angle) * Math.sin(angle) + Math.random() * wig;
 
+    let pxl = imgCtx.getImageData(x / 2, y / 2, 1, 1).data.slice(0, 3); // RGB value
+    let pxlB = 255 - pxl.reduce((centerWidth, wiggleDistance) => centerWidth + wiggleDistance) / 3; // set pixel color to black or white depending on its color
 
-    // copy pixel, black and whitify it, redraw it on our canvas, spiral
-    let pxl = imgCtx.getImageData(x / 2, y / 2, 1, 1).data.slice(0, 3);
-    let pxlB = 255 - pxl.reduce((centerWidth, wiggleDistance) => centerWidth + wiggleDistance) / 3;
+		let h = minThick + pxlB / (255 / (maxThick - minThick));
 
-		const h = minThick + pxlB / (255 / (maxThick - minThick));
-
-    spiralCtx.strokeRect(x, y, h, h);
-    svgExportCtx.strokeRect(x, y, h, h);
-
-    [lastx, lasty] = [x, y];
+    if(params.isFilled === true) {
+      spiralCtx.fillRect(x, y, h, h);
+      svgExportCtx.fillRect(x, y, h, h);
+    } else {
+      spiralCtx.strokeRect(x, y, h, h);
+      svgExportCtx.strokeRect(x, y, h, h);
+    }
   }
 };
 
@@ -145,7 +153,7 @@ const handleDrop = event => {
 
 const download = (filename, content) => {
   let pseudoLink = document.createElement("a");
-  pseudoLink.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(content));
+  pseudoLink.setAttribute("href", "data:image/svg+xml;charset=utf-8," + encodeURIComponent(content));
   pseudoLink.setAttribute("download", filename);
 
   pseudoLink.style.display = "none";
@@ -159,7 +167,7 @@ const download = (filename, content) => {
 
 downloadButton.addEventListener(
   "click", () => {
-    let svg = svgExportCtx.getSerializedSvg().toString();
+    let svg = svgExportCtx.getSerializedSvg();
     let filename = "export.svg";
 
     download(filename, svg);
