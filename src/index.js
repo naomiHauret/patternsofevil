@@ -18,7 +18,7 @@ const params = {
   spiralRadius: spiralCtx.canvas.width / 4,
   centerWidth: 0.5,
   wiggleDistance: 1.25,
-  fillStyle: "#fff",
+  backgroundColor: "#fff",
   strokeStyle: "#000"
 };
 
@@ -57,8 +57,8 @@ gui.add(params, "centerWidth").onChange(newValue => {
   redraw();
 });
 
-gui.addColor(params, "fillStyle").onChange(newValue => {
-  params.fillStyle = newValue;
+gui.addColor(params, "backgroundColor").onChange(newValue => {
+  params.backgroundColor = newValue;
   spiralCanvas.style.backgroundColor = params.fillStyle;
 });
 
@@ -100,12 +100,8 @@ const drawSpiral = (spiralCtx, imgCtx, params) => {
   
   // let's spiraaaaaal
   spiralCtx.clearRect(0, 0, spiralCtx.canvas.width, spiralCtx.canvas.height);  
-  spiralCtx.moveTo(centerx, centery);
-  spiralCtx.strokeStyle = params.strokeStyle;
-  
+  spiralCtx.strokeWidth = 5; 
   svgExportCtx.clearRect(0, 0, spiralCtx.canvas.width, spiralCtx.canvas.height);
-  svgExportCtx.moveTo(centerx, centery);
-  svgExportCtx.strokeStyle = params.strokeStyle;  
 
   let [lastx, lasty] = [centerx, centery];
 
@@ -114,23 +110,15 @@ const drawSpiral = (spiralCtx, imgCtx, params) => {
     let x = centerx + (centerWidth + wiggleDistance * angle) * Math.cos(angle) + Math.random() * wig;
     let y = centery + (centerWidth + wiggleDistance * angle) * Math.sin(angle) + Math.random() * wig;
 
-    spiralCtx.beginPath();
-    spiralCtx.moveTo(lastx, lasty);
-
-    svgExportCtx.beginPath();
-    svgExportCtx.moveTo(lastx, lasty);
 
     // copy pixel, black and whitify it, redraw it on our canvas, spiral
     let pxl = imgCtx.getImageData(x / 2, y / 2, 1, 1).data.slice(0, 3);
     let pxlB = 255 - pxl.reduce((centerWidth, wiggleDistance) => centerWidth + wiggleDistance) / 3;
 
-    spiralCtx.lineWidth = minThick + pxlB / (255 / (maxThick - minThick));
-    spiralCtx.lineTo(x, y);
-    spiralCtx.stroke();
+		const h = minThick + pxlB / (255 / (maxThick - minThick));
 
-    svgExportCtx.lineWidth = minThick + pxlB / (255 / (maxThick - minThick));
-    svgExportCtx.lineTo(x, y);
-    svgExportCtx.stroke();
+    spiralCtx.strokeRect(x, y, h, h);
+    svgExportCtx.strokeRect(x, y, h, h);
 
     [lastx, lasty] = [x, y];
   }
