@@ -7,17 +7,17 @@ const body = document.body;
 const spiralCanvas = document.getElementById("spiral");
 const spiralCtx = spiralCanvas.getContext("2d");
 const imgCtx = document.getElementById("image").getContext("2d");
-const svgExportCtx = new C2S(spiralCtx.canvas.width, spiralCtx.canvas.height);
 const downloadButton = document.querySelector("#downloadSvgCode");
+let svgExportCtx
 
 const params = {
-  steps: 20000,
-  maxThick: 12,
+  steps: 35000,
+  maxThick: 9.5,
   minThick: 0.8,
   wiggleWaviness: 0,
-  spiralRadius: 300,
+  spiralRadius: 470,
   centerWidth: 0,
-  wiggleDistance: 1.15,
+  wiggleDistance: 1.2,
   backgroundColor: "#ffffff",
   drawingColor: "#000",
   isFilled: true,
@@ -107,7 +107,8 @@ const drawSpiral = (spiralCtx, imgCtx, params) => {
   let wiggleDistance = params.wiggleDistance; // distance between two "wiggles"
   let centerx = spiralCtx.canvas.width / 2;
   let centery = spiralCtx.canvas.height / 2;
-  
+  svgExportCtx = new C2S(spiralCtx.canvas.width, spiralCtx.canvas.height);
+
   // let's spiraaaaaal
   spiralCtx.clearRect(0, 0, spiralCtx.canvas.width, spiralCtx.canvas.height);  
   svgExportCtx.clearRect(0, 0, spiralCtx.canvas.width, spiralCtx.canvas.height);
