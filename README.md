@@ -1,12 +1,8 @@
 # Patterns of Evil 🍥😈
 
-![Detailed spiral example](https://i.imgur.com/Y5j4GmS.png)
-![Noisy example](https://i.imgur.com/mU0mCzd.png)
-![Low spiral example](https://i.imgur.com/BAuwv0r.png)
-
 Live demo [available here](https://naomihauret.github.io/patternsofevil/)
 
-School project featuring Axidraw to draw the results.
+A "This is an Axidraw, imagine something and use it" school project that recreates an image on a canvas with a spiral-like look. Features SVG export.
 
 ---
 > The existing algorithms and programs can turn your image into a series of concentric circles.
@@ -20,3 +16,10 @@ Work inspired by :
 - [Gustave Doré's engraving](http://www.worldofdante.org/gallery_dore.html)
 - Chan Hwee Chong's [work and video](https://www.youtube.com/watch?v=bHrjn8kAnqk) for Faber Castell
 - [Paolo Čerić](http://patakk.tumblr.com/)'s work
+
+---
+Example
+[Same image](https://i.pinimg.com/564x/3c/46/bf/3c46bf71a65ce7fad7d37bc0a72dfe80.jpg), with different parameters (distance between spiral wiggles, thickness, more or less details...)
+![Detailed spiral example](https://i.imgur.com/Y5j4GmS.png)
+![Noisy example](https://i.imgur.com/mU0mCzd.png)
+![Low spiral example](https://i.imgur.com/BAuwv0r.png)
