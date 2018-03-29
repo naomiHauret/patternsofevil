@@ -6,9 +6,10 @@ A "This is an Axidraw, imagine something and use it" school project that recreat
 
 ---
 
-> The existing algorithms and programs can turn your image into a series of concentric circles.
 
 ## Inspirations
+
+> The existing algorithms and programs can turn your image into a series of concentric circles.
 
 The name of the project is from Electric Wizard's song ["Patterns of Evil"](https://www.youtube.com/watch?v=nUW9fRMCEOA)
 
