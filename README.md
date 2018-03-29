@@ -1,5 +1,9 @@
 # Patterns of Evil 🍥😈
 
+![Detailed spiral example](https://i.imgur.com/Y5j4GmS.png)
+![Noisy example](https://i.imgur.com/mU0mCzd.png)
+![Low spiral example](https://i.imgur.com/BAuwv0r.png)
+
 Live demo [available here](https://naomihauret.github.io/patternsofevil/)
 
 School project featuring Axidraw to draw the results.
