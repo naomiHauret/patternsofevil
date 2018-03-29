@@ -5,8 +5,8 @@ Live demo [available here](https://naomihauret.github.io/patternsofevil/)
 A "This is an Axidraw, imagine something and use it" school project that recreates an image on a canvas with a spiral-like look. Features SVG export.
 
 ---
+
 > The existing algorithms and programs can turn your image into a series of concentric circles.
----
 
 ## Inspirations
 
