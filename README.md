@@ -23,6 +23,8 @@ The name of the project is from Electric Wizard's song ["Patterns of Evil"](http
 
 ## Examples
 
+---
+
 [Same image](https://i.pinimg.com/564x/3c/46/bf/3c46bf71a65ce7fad7d37bc0a72dfe80.jpg), with different parameters (distance between spiral wiggles, thickness, more or less details...)
 ![Detailed spiral example](https://i.imgur.com/Y5j4GmS.png)
 ![Noisy example](https://i.imgur.com/mU0mCzd.png)
