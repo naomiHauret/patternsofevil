@@ -1,27 +1,7 @@
 const path = require("path");
-const webpack = require("webpack");
-const HtmlPlugin = require("html-webpack-plugin");
+const webpack = require("webpack")
+const HtmlPlugin = require("html-webpack-plugin")
 const exludedFolders = [path.join(__dirname, "node_modules")];
-
-let htmlPluginConfig;
-
-process.env.NODE_ENV === "production"
-  ? (htmlPluginConfig = {
-      template: "./src/index.html",
-      excludeChunks: ["base"],
-      filename: "index.html",
-      minify: {
-        collapseWhitespace: true,
-        collapseInlineTagWhitespace: true,
-        removeComments: true,
-        removeRedundantAttributes: true,
-      }
-    })
-  : {
-      template: "./src/index.html",
-      filename: "index.html",
-    }
-;
 
 module.exports = {
   entry: ["./src/index.js"],
@@ -34,7 +14,7 @@ module.exports = {
   },
   output: {
     filename: "assets/scripts/[name].[hash].js",
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "dist")
   },
   module: {
     rules: [
@@ -42,14 +22,24 @@ module.exports = {
       {
         test: /\.css$/,
         exclude: exludedFolders,
-        use: ["style-loader", "css-loader"],
+        use: ["style-loader", "css-loader"]
       }
     ]
   },
   plugins: [
-    new HtmlPlugin(htmlPluginConfig),
+    new HtmlPlugin({
+      template: "./src/index.html",
+      excludeChunks: ["base"],
+      filename: "index.html",
+      minify: {
+        collapseWhitespace: true,
+        collapseInlineTagWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true
+      }
+    })
   ],
   resolve: {
-    modules: [path.resolve("./src"), path.resolve("./node_modules")],
+    modules: [path.resolve("./src"), path.resolve("./node_modules")]
   }
-};
+}

@@ -5,10 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && npm run wds",
-    "build": "rimraf dist && npx webpack --mode development",
-    "build:prod": "rimraf dist && npx webpack --mode production",
+    "build": "rimraf dist && npx webpack --mode production",
     "wds": "npx webpack-dev-server",
-    "deploy": "npm run build:prod && git add . && git commit -m ':rocket: deploy' && git push && git subtree push --prefix dist origin gh-pages"
+    "deploy": "npm run build && git add . && git commit -m ':rocket: deploy' && git push && git subtree push --prefix dist origin gh-pages"
   },
   "keywords": [
     "axidraw"
